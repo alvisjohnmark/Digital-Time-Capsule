@@ -1,13 +1,64 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { MoveLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function Register() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
 
+  const navigate = useNavigate();
+
+  const clearFields = () => {
+    setName("");
+    setEmail("");
+    setPassword("");
+    setError("");
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (name === "" || email === "" || password === "") {
+      setError("All fields are required");
+      return;
+    }
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters");
+      return;
+    }
+    try {
+      const response = await axios.post("http://localhost:5000/api/register", {
+        name,
+        email,
+        password,
+      });
+
+      if (response.data.token) {
+        localStorage.setItem("token", response.data.token);
+        navigate("/profile");
+      } else {
+        setError("An error occurred");
+      }
+
+      if (response.data.message === "User already exists") {
+        setError(response.data.message);
+      } else {
+        (e.target as HTMLFormElement).reset();
+        clearFields();
+      }
+    } catch (error) {
+      setError("err occured");
+      console.log(error);
+    }
+  };
   return (
     <div className="min-h-screen flex justify-center items-center p-4 bg-[#ece3ca]">
       <NavLink
@@ -21,7 +72,18 @@ export default function Register() {
         <h2 className="text-center text-3xl font-bold text-[#4b5320] mb-6">
           Sign in with Digicap
         </h2>
-        <form className="space-y-4">
+        <form className="space-y-4" onSubmit={handleSubmit}>
+          <div className="form-control">
+            <label className="label text-[#4b5320] font-bold text-lg">
+              <span>Name</span>
+            </label>
+            <input
+              type="name"
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Enter your name"
+              className=" bg-[#ffffff] border-3 border-[#4b5320] text-[#4b5320] text-lg px-4 py-3 rounded-md w-full"
+            />
+          </div>
           <div className="form-control">
             <label className="label text-[#4b5320] font-bold text-lg">
               <span>Email</span>
@@ -30,7 +92,7 @@ export default function Register() {
               type="email"
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
-              className="input input-bordered bg-[#ffffff] border-4 border-[#4b5320] text-[#4b5320] text-lg px-4 py-3 rounded-md w-full"
+              className=" bg-[#ffffff] border-3 border-[#4b5320] text-[#4b5320] text-lg px-4 py-3 rounded-md w-full"
             />
           </div>
 
@@ -42,7 +104,7 @@ export default function Register() {
               type="password"
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
-              className="input input-bordered bg-[#ffffff] border-4 border-[#4b5320] text-[#4b5320] text-lg px-4 py-3 rounded-md w-full"
+              className=" bg-[#ffffff] border-3 border-[#4b5320] text-[#4b5320] text-lg px-4 py-3 rounded-md w-full"
             />
           </div>
           <div className="form-control">
@@ -53,7 +115,7 @@ export default function Register() {
               type="password"
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Confirm your password"
-              className="input input-bordered bg-[#ffffff] border-4 border-[#4b5320] text-[#4b5320] text-lg px-4 py-3 rounded-md w-full"
+              className=" bg-[#ffffff] border-3 border-[#4b5320] text-[#4b5320] text-lg px-4 py-3 rounded-md w-full"
             />
           </div>
           <div className="form-control">
@@ -65,7 +127,7 @@ export default function Register() {
             </button>
           </div>
           {error && (
-            <div className="bg-red-600 text-white text-center rounded-md p-2">
+            <div className=" text-red-600  p-2">
               <p>{error}</p>
             </div>
           )}

@@ -1,11 +1,33 @@
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { MoveLeft } from "lucide-react";
+import axios from "axios";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post("http://localhost:5000/api/login", {
+        email,
+        password,
+      });
+
+      if (response.data.token) {
+        localStorage.setItem("token", response.data.token);
+        navigate("/profile");
+      } else {
+        setError("Invalid email or password");
+      }
+    } catch (error) {
+      setError("Invalid email or password");
+      console.log(error);
+    }
+  };
 
   return (
     <div className="min-h-screen flex justify-center items-center p-4 bg-[#ece3ca]">
@@ -13,7 +35,7 @@ const Login = () => {
         to="/"
         className="absolute top-5 left-5 flex items-center gap-2 text-[#4b5320] font-bold text-lg hover:underline"
       >
-        <MoveLeft size={28} strokeWidth={1.75}  />
+        <MoveLeft size={28} strokeWidth={1.75} />
         <span>Back to Home</span>
       </NavLink>
 
@@ -22,7 +44,7 @@ const Login = () => {
           Welcome Back
         </h2>
 
-        <form className="space-y-6">
+        <form className="space-y-6" onSubmit={handleSubmit}>
           <div className="form-control">
             <label className="label text-[#4b5320] font-bold mb-2 text-lg">
               <span>Email</span>
@@ -30,7 +52,7 @@ const Login = () => {
             <input
               type="email"
               placeholder="Enter your email"
-              className="input input-bordered bg-[#ffffff] border-4 border-[#4b5320] text-[#4b5320] text-lg px-4 py-3 rounded-md w-full"
+              className=" bg-[#ffffff] border-3  border-[#4b5320] text-[#4b5320] text-lg px-4 py-3 rounded-md w-full"
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
@@ -41,7 +63,7 @@ const Login = () => {
             <input
               type="password"
               placeholder="Enter your password"
-              className="input input-bordered bg-[#ffffff] border-4 border-[#4b5320] text-[#4b5320] text-lg px-4 py-3 rounded-md w-full"
+              className=" bg-[#ffffff] border-3 border-[#4b5320] text-[#4b5320] text-lg px-4 py-3 rounded-md w-full"
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
@@ -63,7 +85,10 @@ const Login = () => {
 
         <p className="text-end text-black mt-4">
           Don't have an account?{" "}
-          <NavLink to="/register" className="text-[#939e59] font-bold hover:underline">
+          <NavLink
+            to="/register"
+            className="text-[#939e59] font-bold hover:underline"
+          >
             Register here
           </NavLink>
         </p>
