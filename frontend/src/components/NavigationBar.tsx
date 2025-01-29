@@ -1,54 +1,75 @@
-import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import { AlignJustify, X } from "lucide-react";
 
 const NavigationBar = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsAuthenticated(!!token);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsAuthenticated(false);
+    navigate("/");
+  };
+
+  const navLinkClass = ({ isActive }: { isActive: boolean }) =>
+    `text-white text-lg font-medium transition-colors duration-300 ${
+      isActive ? "border-b-2 border-white pb-1" : "hover:text-gray-200"
+    }`;
 
   return (
-    <nav className="bg-[#ff8a65] shadow-lg">
-      <div className="container mx-auto px-4 flex items-center justify-between py-6">
-        <NavLink to="/" className="text-white font-bold text-2xl">
-          Digicap
+    <nav className="bg-[#ff8a65] p-4 flex justify-between items-center">
+      <div className="text-white text-2xl font-bold">
+        Digicap: A Digital Time Capsule App
+      </div>
+      
+      {/* Desktop Navigation */}
+      <div className="hidden md:flex items-center gap-10">
+        <NavLink to="/" className={navLinkClass}>
+          Home
         </NavLink>
-
-        {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center justify-center gap-10">
-          <NavLink
-            to="/"
-            className="text-white text-lg font-medium hover:text-gray-200 transition-colors duration-300"
-          >
-            Home
+        <NavLink to="/features" className={navLinkClass}>
+          Features
+        </NavLink>
+        <NavLink to="/about" className={navLinkClass}>
+          About
+        </NavLink>
+        {isAuthenticated && (
+          <NavLink to="/capsules" className={navLinkClass}>
+            Capsules
           </NavLink>
-          <NavLink
-            to="/features"
-            className="text-white text-lg font-medium hover:text-gray-200 transition-colors duration-300"
+        )}
+        {isAuthenticated ? (
+          <button
+            onClick={handleLogout}
+            className="bg-white text-[#ff8a65] px-5 py-2 rounded-lg font-semibold shadow-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-400"
           >
-            Features
-          </NavLink>
+            Logout
+          </button>
+        ) : (
           <NavLink
-            to="/about"
-            className="text-white text-lg font-medium hover:text-gray-200 transition-colors duration-300"
-          >
-            About
-          </NavLink>
-          <NavLink
-            to="/login"
-            className="bg-white text-orange-500 px-5 py-2 rounded-lg font-semibold shadow-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-400"
+            to="/register"
+            className="bg-white text-[#ff8a65] px-5 py-2 rounded-lg font-semibold shadow-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-400"
           >
             Sign in
           </NavLink>
-        </div>
+        )}
+      </div>
 
-        {/* Mobile Menu Button */}
-        <div className="md:hidden">
-          <button
-            className="text-white focus:outline-none"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            <AlignJustify className="cursor-pointer" />
-          </button>
-        </div>
+      {/* Mobile Menu Button */}
+      <div className="md:hidden">
+        <button
+          className="text-white focus:outline-none"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        >
+          <AlignJustify className="cursor-pointer" />
+        </button>
       </div>
 
       {/* Mobile Sidebar */}
@@ -56,7 +77,7 @@ const NavigationBar = () => {
         <>
           {/* Backdrop */}
           <div
-            className="fixed inset-0 bg-opacity-100 z-40"
+            className="fixed inset-0 bg-black bg-opacity-40 z-40"
             onClick={() => setMobileMenuOpen(false)}
           ></div>
 
@@ -69,36 +90,37 @@ const NavigationBar = () => {
                   className="cursor-pointer"
                 />
               </div>
-              <NavLink
-                to="/"
-                className="block px-4 py-2 text-black hover:bg-orange-100"
-              >
+              <NavLink to="/" className={navLinkClass}>
                 Home
               </NavLink>
-              <NavLink
-                to="/features"
-                className="block px-4 py-2 text-black hover:bg-orange-100"
-              >
+              <NavLink to="/features" className={navLinkClass}>
                 Features
               </NavLink>
-              <NavLink
-                to="/about"
-                className="block px-4 py-2 text-black hover:bg-orange-100"
-              >
+              <NavLink to="/about" className={navLinkClass}>
                 About
               </NavLink>
-              <NavLink
-                to="/login"
-                className="block px-4 py-2 text-center bg-[#ffe4b5] text-orange-500 font-semibold mt-4"
-              >
-                Sign in
-              </NavLink>
-              <div className="flex justify-center items-end h-full">
-                <div className="mt-6 border-t border-gray-200 pt-6">
-                  <p className="text-center text-gray-500">
-                    &copy; {new Date().getFullYear()} Digicap. All rights reserved.
-                  </p>
-                </div>
+              {isAuthenticated && (
+                <NavLink to="/capsules" className={navLinkClass}>
+                  Capsules
+                </NavLink>
+              )}
+              {isAuthenticated ? (
+                <button
+                  onClick={handleLogout}
+                  className="block px-4 py-2 text-center w-full text-white bg-[#ff8a65] font-semibold mt-4"
+                >
+                  Logout
+                </button>
+              ) : (
+                <NavLink
+                  to="/register"
+                  className="block px-4 py-2 text-center text-white bg-[#ff8a65] font-semibold mt-4"
+                >
+                  Sign in
+                </NavLink>
+              )}
+              <div className="mt-6 border-t border-gray-200 pt-6 text-center text-gray-500">
+                &copy; {new Date().getFullYear()} Digicap. All rights reserved.
               </div>
             </div>
           </div>

@@ -1,5 +1,6 @@
 import NavigationBar from "../components/NavigationBar";
 import Footer from "../components/Footer";
+import { useEffect, useState } from "react";
 import {
   User,
   Mail,
@@ -9,8 +10,14 @@ import {
   ShieldCheck,
   Share,
 } from "lucide-react";
+import { NavLink } from "react-router-dom";
 
 const LandingPage = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsAuthenticated(!!token);
+  }, []);
   return (
     <>
       <NavigationBar />
@@ -30,12 +37,25 @@ const LandingPage = () => {
                 to notes and dreams, and relive them whenever you choose.
               </p>
               <div className="flex justify-center lg:justify-start gap-4">
-                <button className="btn px-8 py-3 bg-[#ff8a65] text-white text-lg rounded-none hover:bg-[#e67a58]">
-                  Get Started
-                </button>
-                <button className="btn px-8 py-3 bg-[#ffe0b2] text-[#4e3e31] text-lg rounded-none border border-[#4e3e31] hover:bg-[#f4d8b0]">
+                {isAuthenticated ? (
+                  <NavLink
+                    to="/capsules"
+                    className="btn px-8 py-3 bg-[#ff8a65] text-white text-lg rounded-none hover:bg-[#e67a58]"
+                  >
+                    Get Started
+                  </NavLink>
+                ) : (
+                  <NavLink
+                    to="/register"
+                    className="btn px-8 py-3 bg-[#ff8a65] text-white text-lg rounded-md hover:bg-[#e67a58]"
+                  >
+                    Get Started
+                  </NavLink>
+                )}
+
+                <NavLink to="/about" className="btn px-8 py-3 bg-[#ffe0b2] text-[#4e3e31] text-lg  hover:bg-[#f4d8b0] rounded-md">
                   Learn More
-                </button>
+                </NavLink>
               </div>
             </div>
           </div>
@@ -98,7 +118,7 @@ const LandingPage = () => {
         </section>
 
         {/* How It Works Section */}
-        <section className="bg-[#ffe4b5] py-16">
+        <section className="bg-[#ffeecf] py-16">
           <div className="max-w-6xl mx-auto px-6 lg:px-12 text-center">
             <h2 className="text-4xl font-extrabold text-[#4b5320] mb-12 tracking-widest">
               How It Works
@@ -135,7 +155,7 @@ const LandingPage = () => {
           </div>
         </section>
         <section>
-          <div className="bg-[#ffe4b5] py-16">
+          <div className="bg-[#ffeecf] py-16">
             <h2 className="text-4xl font-extrabold text-[#4b5320] text-center mb-12 tracking-widest">
               Rest Assured
             </h2>

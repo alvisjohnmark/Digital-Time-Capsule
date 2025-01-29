@@ -7,21 +7,21 @@ const Footer = () => {
         <h1 className=" text-center mb-4 text-2xl font-bold">Digicap</h1>
 
         <div className="flex justify-center gap-4">
-          <a href="#" aria-label="Facebook" className="hover:text-[#3b5998]">
+          <a href="#" aria-label="Facebook">
             <Facebook className="w-6 h-6" />
           </a>
-          <a href="#" aria-label="Twitter" className="hover:text-[#1da1f2]">
+          <a href="#" aria-label="Twitter">
             <Twitter className="w-6 h-6" />
           </a>
-          <a href="#" aria-label="Instagram" className="hover:text-[#e4405f]">
+          <a href="#" aria-label="Instagram">
             <Instagram className="w-6 h-6" />
           </a>
-          <a href="#" aria-label="LinkedIn" className="hover:text-[#0077b5]">
+          <a href="#" aria-label="LinkedIn">
             <Linkedin className="w-6 h-6" />
           </a>
         </div>
         <p className="text-sm mt-4">
-          &copy; 2024 DTC Inc. All rights reserved. {new Date().getFullYear()}
+          &copy; DTC Inc. All rights reserved. {new Date().getFullYear()}
         </p>
       </div>
     </footer>

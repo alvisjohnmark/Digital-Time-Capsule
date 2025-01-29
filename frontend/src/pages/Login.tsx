@@ -19,7 +19,7 @@ const Login = () => {
 
       if (response.data.token) {
         localStorage.setItem("token", response.data.token);
-        navigate("/profile");
+        navigate("/capsules");
       } else {
         setError("Invalid email or password");
       }
@@ -30,17 +30,17 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-center p-4 bg-[#ece3ca]">
+    <div className="min-h-screen flex justify-center items-center p-4">
       <NavLink
         to="/"
-        className="absolute top-5 left-5 flex items-center gap-2 text-[#4b5320] font-bold text-lg hover:underline"
+        className="absolute top-5 left-5 flex items-center gap-2 text-[#ff8a65] font-bold text-lg hover:underline"
       >
         <MoveLeft size={28} strokeWidth={1.75} />
-        <span>Back to Home</span>
+        <span >Back to Home</span>
       </NavLink>
 
-      <div className="w-full max-w-md p-8 bg-[#ffffff] rounded-lg shadow-lg">
-        <h2 className="text-center text-3xl font-bold text-[#4b5320] mb-6">
+      <div className="w-full max-w-md p-8 rounded-lg">
+        <h2 className="text-center text-3xl font-bold text-[#ff8a65] mb-6">
           Welcome Back
         </h2>
 
@@ -52,7 +52,7 @@ const Login = () => {
             <input
               type="email"
               placeholder="Enter your email"
-              className=" bg-[#ffffff] border-3  border-[#4b5320] text-[#4b5320] text-lg px-4 py-3 rounded-md w-full"
+              className=" border-3  border-[#4b5320] text-[#4b5320] text-lg px-4 py-3 rounded-md w-full"
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
@@ -63,7 +63,7 @@ const Login = () => {
             <input
               type="password"
               placeholder="Enter your password"
-              className=" bg-[#ffffff] border-3 border-[#4b5320] text-[#4b5320] text-lg px-4 py-3 rounded-md w-full"
+              className=" border-3 border-[#4b5320] text-[#4b5320] text-lg px-4 py-3 rounded-md w-full"
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
@@ -71,23 +71,19 @@ const Login = () => {
           <div className="form-control">
             <button
               type="submit"
-              className="btn w-full bg-[#4b5320] text-white text-lg font-semibold py-3 rounded-md shadow-lg hover:bg-[#6a7d47]"
+              className="btn w-full bg-[#ff8a65] cursor-pointer text-white text-lg font-semibold py-3 rounded-md shadow-lg "
             >
               Login
             </button>
           </div>
-          {error && (
-            <div className="bg-red-600 text-white text-center rounded-md p-2 ">
-              {error}
-            </div>
-          )}
+          {error && <div className=" text-red-600 p-2 ">{error}</div>}
         </form>
 
-        <p className="text-end text-black mt-4">
+        <p className="text-center text-black mt-4 ">
           Don't have an account?{" "}
           <NavLink
             to="/register"
-            className="text-[#939e59] font-bold hover:underline"
+            className="text-[#ff8a65]  font-bold hover:underline"
           >
             Register here
           </NavLink>
