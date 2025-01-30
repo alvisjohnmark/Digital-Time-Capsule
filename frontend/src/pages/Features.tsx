@@ -1,7 +1,14 @@
-
+import NavigationBar from "../components/NavigationBar"
+import Footer from "../components/Footer"
 const Features = () => {
   return (
-    <div>Features</div>
+    <>
+      <NavigationBar />
+      <main className="h-screen">
+        Features
+      </main>
+      <Footer />
+    </>
   )
 }
 

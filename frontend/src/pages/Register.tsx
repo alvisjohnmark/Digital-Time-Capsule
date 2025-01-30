@@ -2,6 +2,7 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { MoveLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 
 export default function Register() {
@@ -17,12 +18,15 @@ export default function Register() {
     setName("");
     setEmail("");
     setPassword("");
+    setConfirmPassword("");
     setError("");
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (name === "" || email === "" || password === "") {
+    setError(""); 
+
+    if (!name || !email || !password || !confirmPassword) {
       setError("All fields are required");
       return;
     }
@@ -34,6 +38,7 @@ export default function Register() {
       setError("Passwords do not match");
       return;
     }
+
     try {
       const response = await axios.post("http://localhost:5000/api/register", {
         name,
@@ -43,20 +48,22 @@ export default function Register() {
 
       if (response.data.token) {
         localStorage.setItem("token", response.data.token);
-        navigate("/capsules");
-      } else {
-        setError("An error occurred");
-      }
+        toast.success("Register Successful!", { autoClose: 1500 });
 
-      if (response.data.message === "User already exists") {
+        setTimeout(() => {
+          setError("")
+          navigate("/capsules");
+        }, 1500);
+
+        clearFields();
+      } else if (response.data.message === "User already exists") {
         setError(response.data.message);
       } else {
-        (e.target as HTMLFormElement).reset();
-        clearFields();
+        setError("An error occurred, please try again!");
       }
     } catch (error) {
-      setError("err occured");
-      console.log(error);
+      setError("An error occurred. Please try again.");
+      console.error(error);
     }
   };
   return (
@@ -121,10 +128,11 @@ export default function Register() {
           <div className="form-control">
             <button
               type="submit"
-              className="btn w-full bg-[#ff8a65] text-white text-lg font-semibold py-3 rounded-md shadow-lg "
+              className="btn w-full bg-[#ff8a65] cursor-pointer text-white text-lg font-semibold py-3 rounded-md shadow-lg "
             >
               Register
             </button>
+            <ToastContainer />
           </div>
           {error && (
             <div className=" text-red-600  p-2">

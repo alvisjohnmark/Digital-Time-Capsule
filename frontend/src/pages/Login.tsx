@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { MoveLeft } from "lucide-react";
+import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 
 const Login = () => {
@@ -16,13 +17,15 @@ const Login = () => {
         email,
         password,
       });
-
       if (response.data.token) {
         localStorage.setItem("token", response.data.token);
-        navigate("/capsules");
-      } else {
-        setError("Invalid email or password");
-      }
+        toast.success("Login Successful!", { autoClose: 1500 });
+        setTimeout(() => {
+          setError("")
+          navigate("/capsules");
+          }, 1500);
+        }
+
     } catch (error) {
       setError("Invalid email or password");
       console.log(error);
@@ -36,7 +39,7 @@ const Login = () => {
         className="absolute top-5 left-5 flex items-center gap-2 text-[#ff8a65] font-bold text-lg hover:underline"
       >
         <MoveLeft size={28} strokeWidth={1.75} />
-        <span >Back to Home</span>
+        <span>Back to Home</span>
       </NavLink>
 
       <div className="w-full max-w-md p-8 rounded-lg">
@@ -75,6 +78,7 @@ const Login = () => {
             >
               Login
             </button>
+            <ToastContainer />
           </div>
           {error && <div className=" text-red-600 p-2 ">{error}</div>}
         </form>
